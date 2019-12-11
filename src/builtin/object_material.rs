@@ -111,7 +111,7 @@ impl Material for ObjectMaterial {
             verify!(ctxt.active_texture(Context::TEXTURE0));
             verify!(ctxt.bind_texture(Context::TEXTURE_2D, Some(&*data.texture())));
 
-            verify!(ctxt.blend_func(Context::SRC_ALPHA, Context::ONE_MINUS_SRC_ALPHA));
+            verify!(ctxt.blend_func(0, 768));
             verify!(ctxt.enable(Context::BLEND));
             self.alpha.upload(data.alpha());
 
