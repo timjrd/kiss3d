@@ -17,6 +17,7 @@ pub struct ObjectMaterial {
     tex_coord: ShaderAttribute<Point2<f32>>,
     light: ShaderUniform<Point3<f32>>,
     color: ShaderUniform<Point3<f32>>,
+    alpha: ShaderUniform<f32>,
     transform: ShaderUniform<Matrix4<f32>>,
     scale: ShaderUniform<Matrix3<f32>>,
     ntransform: ShaderUniform<Matrix3<f32>>,
@@ -39,6 +40,7 @@ impl ObjectMaterial {
             tex_coord: effect.get_attrib("tex_coord").unwrap(),
             light: effect.get_uniform("light_position").unwrap(),
             color: effect.get_uniform("color").unwrap(),
+            alpha: effect.get_uniform("alpha").unwrap(),
             transform: effect.get_uniform("transform").unwrap(),
             scale: effect.get_uniform("scale").unwrap(),
             ntransform: effect.get_uniform("ntransform").unwrap(),
@@ -109,6 +111,10 @@ impl Material for ObjectMaterial {
             verify!(ctxt.active_texture(Context::TEXTURE0));
             verify!(ctxt.bind_texture(Context::TEXTURE_2D, Some(&*data.texture())));
 
+            verify!(ctxt.blend_func(Context::SRC_ALPHA, Context::ONE_MINUS_SRC_ALPHA));
+            verify!(ctxt.enable(Context::BLEND));
+            self.alpha.upload(data.alpha());
+
             if data.surface_rendering_active() {
                 self.color.upload(data.color());
 
@@ -174,6 +180,8 @@ impl Material for ObjectMaterial {
                 }
                 ctxt.point_size(1.0);
             }
+
+            verify!(ctxt.disable(Context::BLEND));
         }
 
         mesh.unbind();

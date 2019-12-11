@@ -11,6 +11,7 @@ varying vec3 normalInterp;
 varying vec3 vertPos;
 
 uniform vec3 color;
+uniform float alpha;
 uniform sampler2D tex;
 const vec3 specColor = vec3(0.4, 0.4, 0.4);
 
@@ -31,5 +32,5 @@ void main() {
   vec4 tex_color = texture2D(tex, tex_coord_v);
   gl_FragColor = tex_color * vec4(color / 3.0 +
                                   lambertian * color / 3.0 +
-                                  specular * specColor / 3.0, 1.0);
+                                  specular * specColor / 3.0, alpha);
 }
